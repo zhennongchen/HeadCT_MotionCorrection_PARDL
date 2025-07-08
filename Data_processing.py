@@ -2,8 +2,7 @@ import numpy as np
 import nibabel as nb
 import os
 from skimage.measure import block_reduce
-# import HeadCT_motion_correction_PAR.Defaults as Defaults
-import HeadCT_motion_correction_PAR.functions_collection as ff
+import HeadCT_MotionCorrection_PARDL.functions_collection as ff
 
 
 

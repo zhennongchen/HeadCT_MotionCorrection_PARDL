@@ -6,7 +6,7 @@ import math
 import SimpleITK as sitk
 import nibabel as nb
 from dipy.align.reslice import reslice
-import HeadCT_motion_correction_PAR.Data_processing as dp
+import HeadCT_MotionCorrection_PARDL.Data_processing as dp
 import CTProjector.src.ct_projector.projector.numpy as ct_projector
 
 # function: generate angle list

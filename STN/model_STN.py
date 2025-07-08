@@ -12,7 +12,7 @@ from tensorflow.keras.layers import Activation
 from tensorflow.keras.layers import BatchNormalization
 import tensorflow.keras.backend as kb
  
-import HeadCT_motion_correction_PAR.STN.model_components as compo
+import HeadCT_MotionCorrection_PARDL.STN.model_components as compo
 
 conv_dict = {2: Conv2D, 3: Conv3D}
 max_pooling_dict = {2: MaxPool2D, 3: MaxPool3D}

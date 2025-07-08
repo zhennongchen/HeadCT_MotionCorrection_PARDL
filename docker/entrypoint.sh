@@ -10,12 +10,14 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 export PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:\${PATH}" >> /home/${CONTAINER_UNAME}/.bashrc
 
 cd /home/${CONTAINER_UNAME}
+# enter as a user
+su - ${CONTAINER_UNAME} 
 
-if (( $# < 1 ))
-then
-    su - ${CONTAINER_UNAME}
-else
-    echo "$@"
-    echo ${CONTAINER_UNAME}
-    su ${CONTAINER_UNAME} -c "$@"
-fi
+# if (( $# < 1 ))
+# then
+#     su - ${CONTAINER_UNAME}
+# else
+#     echo "$@"
+#     echo ${CONTAINER_UNAME}
+#     su ${CONTAINER_UNAME} -c "$@"
+# fi.

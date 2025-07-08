@@ -2,11 +2,11 @@
 
 import numpy as np
 import random
-import HeadCT_motion_correction_PAR.Data_processing as dp
-import HeadCT_motion_correction_PAR.Defaults as Defaults
-import HeadCT_motion_correction_PAR.STN.Bspline as Bspline
-import HeadCT_motion_correction_PAR.motion_simulator.transformation as transform
-import HeadCT_motion_correction_PAR.functions_collection as ff
+import HeadCT_MotionCorrection_PARDL.Data_processing as dp
+import HeadCT_MotionCorrection_PARDL.Defaults as Defaults
+import HeadCT_MotionCorrection_PARDL.STN.Bspline as Bspline
+import HeadCT_MotionCorrection_PARDL.motion_simulator.transformation as transform
+import HeadCT_MotionCorrection_PARDL.functions_collection as ff
 import tensorflow as tf
 import math
 import nibabel as nb

@@ -17,7 +17,7 @@ CONTAINER_DATADIR="/mnt" #should be /mnt/data when using NAS drive
 sudo docker run -it --runtime=nvidia --name=docker_ex --network="bridge" \
 -v ${HOST_WORK_DIR}:${CONTAINER_WORKDIR} \
 -v ${HOST_DATA_DIR}:${CONTAINER_DATADIR} \
--p 8120:8120 \
+-p 8150:8150 \
 -e CONTAINER_UID=${HOST_USER_ID} \
 -e CONTAINER_GID=${HOST_GROUP_ID} \
 -e CONTAINER_UNAME=${HOST_USER_NAME} \
