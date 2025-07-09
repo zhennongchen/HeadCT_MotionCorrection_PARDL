@@ -23,13 +23,12 @@ class Build():
         random_name_list = np.asarray(c['MotionName'])
         start_slice_list = np.asarray(c['PAR_start_slice'])
         end_slice_list = np.asarray(c['PAR_end_slice'])
+
         motion_free_file_list = np.asarray(c['MotionFree_File'])
-        motion_free_ds_file_list = np.asarray(c['MotionFreeDs_File'])
         motion_file_list = np.asarray(c['Motion_File'])
-        motion_ds_file_list = np.asarray(c['MotionDs_File'])
+
         motion_param_list = np.asarray(c['MotionParam'])
         par_image_list = np.asarray(c['PAR_File'])
-        image_from_par_list = np.asarray(c['ImageFromPARMVF'])
         
-        return batch_list, patient_id_list, patient_subid_list, random_name_list, start_slice_list, end_slice_list, motion_free_file_list, motion_free_ds_file_list, motion_file_list, motion_ds_file_list, motion_param_list, par_image_list, image_from_par_list
+        return batch_list, patient_id_list, patient_subid_list, random_name_list, start_slice_list, end_slice_list, motion_free_file_list, motion_file_list, motion_param_list, par_image_list
        

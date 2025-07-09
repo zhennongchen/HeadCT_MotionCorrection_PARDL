@@ -3,8 +3,6 @@
 import numpy as np
 import random
 import HeadCT_MotionCorrection_PARDL.Data_processing as dp
-import HeadCT_MotionCorrection_PARDL.Defaults as Defaults
-import HeadCT_MotionCorrection_PARDL.STN.Bspline as Bspline
 import HeadCT_MotionCorrection_PARDL.motion_simulator.transformation as transform
 import HeadCT_MotionCorrection_PARDL.functions_collection as ff
 import tensorflow as tf
@@ -17,24 +15,23 @@ from tensorflow.keras.utils import Sequence
 
 class DataGenerator(Sequence):
 
-    def __init__(self,X_par_image,Y_motion_param, 
-        start_slice_list,
-        end_slice_list,
-        start_slice_sampling = None,
-        # Y_true_image,  # for 2D
-        patient_num = None, 
-        batch_size = None, 
-        input_dimension = None,
-        output_vector_dimension = None,
-        output_img_dimension = None,  # for 2D, if crop size = 30, this is [60,60,2]
-        shuffle = None,
-        augment = None,
-        augment_frequency = None,
-        seed = 10):
+    def __init__(self,
+                X_par_image,
+                Y_motion_param, 
+                start_slice_list,
+                end_slice_list,
+                start_slice_sampling = None,
+                patient_num = None, 
+                batch_size = None, 
+                input_dimension = None,
+                output_vector_dimension = None,
+                shuffle = None,
+                augment = None,
+                augment_frequency = None,
+                seed = 10):
 
         self.X_par_image = X_par_image
         self.Y_motion_param = Y_motion_param
-        # self.Y_true_image = Y_true_image
         
         self.start_slice_list = start_slice_list
         self.end_slice_list = end_slice_list
@@ -44,7 +41,6 @@ class DataGenerator(Sequence):
         self.batch_size = batch_size
         self.input_dimension = input_dimension
         self.output_vector_dimension = output_vector_dimension
-        self.output_img_dimension = output_img_dimension
         self.shuffle = shuffle
         self.augment = augment
         self.augment_frequency = augment_frequency
@@ -96,21 +92,16 @@ class DataGenerator(Sequence):
                 do_or_not = np.random.rand()
                 if do_or_not > (1-self.augment_frequency):
                     do = 1
-                    # augment_t_or_r = np.random.rand()
-                    # augment_t_or_r >0.5: # augment translation #
                     augment_tx = np.random.rand() * 8; augment_tx = [augment_tx if np.random.rand() > 0.5 else -augment_tx for i in range(0,1)][0]
                     augment_ty = np.random.rand() * 8; augment_ty = [augment_ty if np.random.rand() > 0.5 else -augment_ty for i in range(0,1)][0]
                     augment_r = 0
-                    print('augment tx and ty: ', augment_tx, augment_ty)
-                    # else: # augment rotation
-                        # augment_tx = 0; augment_ty = 0
-                        # augment_r = np.random.rand() * 10; augment_r = [augment_r if np.random.rand() > 0.5 else -augment_r for i in range(0,1)][0] / 180 * np.pi
+                    # print('augment tx and ty: ', augment_tx, augment_ty)
                 else:
                     do = 0
 
             # path to input
-            # x = self.X_par_image[j]
-            # x = nb.load(x).get_fdata().astype(np.float)
+            x = self.X_par_image[j]
+            x = nb.load(x).get_fdata().astype(np.float)
 
             # pick slices
             if self.start_slice_sampling is None:
@@ -118,23 +109,15 @@ class DataGenerator(Sequence):
             else:
                 start_slice = np.random.choice(self.start_slice_sampling)
 
-            print('start_slice: ',start_slice)
+            end_slice = start_slice + self.input_dimension[2]  
+            x = x[:,:,:,start_slice:end_slice]  # pick slices
             
-            if start_slice == 60:
-                start_slice = 55
-            if start_slice == 120:
-                start_slice = 115
-            if start_slice == 180:
-                start_slice = 175
-            
-            # need to change the code if using PARs_ds_crop.nii.gz or PARs_ds_crop_anneal.nii.gz
-            x_file = os.path.join(os.path.dirname(self.X_par_image[j]) , 'PARs_slice_' + str(start_slice)+'.nii.gz') 
-            x = nb.load(x_file).get_fdata().astype(np.float)
+            # x_file = os.path.join(os.path.dirname(self.X_par_image[j]) , 'PARs_slice_' + str(start_slice)+'.nii.gz') 
+            # x = nb.load(x_file).get_fdata().astype(np.float)
         
             # cut off the background intensity
             x = dp.cutoff_intensity(x, -7000)
 
-            
             if self.augment == True and do == 1:
                 par_aug = np.copy(x)
                 for kk in range(0,par_aug.shape[0]):
@@ -152,32 +135,13 @@ class DataGenerator(Sequence):
             y = self.Y_motion_param[j]
             y = np.load(y,allow_pickle = True)
 
-            # 3D: pixel resolution: x = 1, y = 1, z = 2.5mm
+            # 3D: pixel resolution: x = 1, y = 1, z = 2.5mm, we need to normalize
             tx = y[0,:][0][1:  1+ self.output_vector_dimension[0]] / 1 / 5  # only need the last four control points, first one is always 0
             ty = y[1,:][0][1:  1+ self.output_vector_dimension[0]] / 1 / 5 
             tz = y[2,:][0][1: 1 + self.output_vector_dimension[0]] / 2.5 / 2
             rx = np.asarray(y[3,:][0][1: 1+self.output_vector_dimension[0]]) / 5
             ry = np.asarray(y[4,:][0][1: 1+self.output_vector_dimension[0]]) / 5
             rz = np.asarray(y[5,:][0][1: 1+self.output_vector_dimension[0]]) / 5
-
-
-            # 2D:
-            # tx = np.asarray(y[0,:][0][1:5]) / 5  
-            # ty = np.asarray(y[2,:][0][1:5]) / 5
-            # theta = np.asarray(y[5,:][0][1:5]) / 5
-
-      
-            # # path to output image
-            # y_img = self.Y_true_image[j]
-            # y_img = nb.load(y_img).get_fdata()
-            # if self.augment == True and do == 1:
-            #     _,_,_,transformation_matrix = transform.generate_transform_matrix([augment_tx,augment_ty,0],[0,0,augment_r],[1,1,1],y_img.shape)
-            #     transformation_matrix = transform.transform_full_matrix_offset_center(transformation_matrix, y_img.shape)
-            #     y_img = transform.apply_affine_transform(y_img, transformation_matrix,3, cval = np.min(y_img))
-
-            # y_img = y_img[(y_img.shape[0]//2 - 30):(y_img.shape[0]//2 + 30), (y_img.shape[1]//2 - 30):(y_img.shape[1]//2 + 30),[5,10]]
-            # y_img = y_img / 1000
-            # y_img = np.expand_dims(y_img, axis = -1)
         
 
             batch_x[i] = x

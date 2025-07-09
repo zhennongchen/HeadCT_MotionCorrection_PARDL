@@ -52,35 +52,6 @@ def cutoff_intensity(x,cutoff):
         x[x<cutoff] = cutoff
     return x
 
-
-def save_partial_volumes(img_list,file_name,slice_range = None): # only save some slices of an original CT volume
-    for img_file in img_list:
-        f = os.path.join(os.path.dirname(img_file),file_name)
-
-        if os.path.isfile(f) == 1:
-            print('already saved partial volume')
-            continue
-        
-        x = nb.load(img_file)
-        img = x.get_data()
-        print(img_file,img.shape)
-        
-
-        if slice_range == None:
-            # slice_range = [int(img.shape[-1]/2) - 30, int(img.shape[-1]/2) + 30]
-            slice_range = [10,60]
-        
-        if img.shape[-1] < (slice_range[1] - slice_range[0]):
-            print('THIS ONE DOES NOT HAVE ENOUGH SLICES, CONTINUE')
-            continue
-        
-        img = img[:,:,slice_range[0]:slice_range[1]]
-
-        # ff.make_folder([f])
-        img = nb.Nifti1Image(img,x.affine)
-        nb.save(img, f)
-
-
 def downsample_crop_image(img_list, file_name, crop_size, factor = [2,2,1],):
     # crop_size = [128,128,z_dim]
 
