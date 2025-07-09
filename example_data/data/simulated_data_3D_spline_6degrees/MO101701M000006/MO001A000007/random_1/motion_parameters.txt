@@ -1,0 +1,10 @@
+time_points: 0.0 125.0 250.0 375.0 500.0 
+translation_x_CP: 0.0 1.472 1.565 1.355 0.0 
+translation_y_CP: 0.0 -0.987 -1.772 -2.541 -1.109 
+translation_z_CP: 0.0 -1.87 -2.902 -3.339 -4.277 
+rotation_x_CP: 0.0 -1.638 -2.167 -1.99 0.457 
+rotation_y_CP: 0.0 1.474 3.409 3.02 2.814 
+rotation_z_CP: 0.0 -1.705 -2.405 -2.828 -2.253 
+starting_gantry_angle: 4 
+total_projection_view: 1400 
+gantry_rotation_time(ms): 500 
